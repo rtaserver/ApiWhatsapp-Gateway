@@ -1,5 +1,6 @@
-global.port = "5001";
-global.pairingNumber = ""; //pairing number to install bot
-global.sessionName = "session";
-
-//http://localhost:5001/send-message?message=tester&number=08123456789
+global.port = "5001"; // port api / browser
+//========================================================
+global.usePairingNumber = true; // if false - use qrcode
+global.pairingNumber = ""; //use your whatsapp number to install bot
+//========================================================
+global.sessionName = "session"; // session name

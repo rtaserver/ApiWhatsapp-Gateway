@@ -12,7 +12,7 @@ const {
 const NodeCache = require("node-cache");
 const readline = require("readline");
 const pino = require("pino");
-const pairingCode = true;
+const pairingCode = global.usePairingNumber;
 const useMobile = false;
 const rl = readline.createInterface({
   input: process.stdin,
@@ -26,12 +26,21 @@ const path = require("path");
 const { smsg } = require("./lib/simple");
 
 const express = require("express");
+const fileUpload = require("express-fileupload");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const http = require("http");
 
 var app = express();
+
+// enable files upload
+app.use(
+  fileUpload({
+    createParentPath: true,
+  })
+);
+
 app.use(morgan("dev"));
 app.use(cors());
 app.use(express.json());
@@ -48,6 +57,33 @@ var server = http.createServer(app);
 server.on("listening", () => console.log("APP IS RUNNING ON PORT " + PORT));
 
 server.listen(PORT);
+
+const io = require("socket.io")(server);
+const qrcode = require("qrcode");
+const { isBoolean } = require("util");
+
+app.use("/assets", express.static(__dirname + "/client/assets"));
+
+app.get("/scan", (req, res) => {
+  res.sendFile("./client/server.html", {
+    root: __dirname,
+  });
+});
+
+app.get("/", (req, res) => {
+  res.sendFile("./client/index.html", {
+    root: __dirname,
+  });
+});
+//fungsi suara capital
+function capital(textSound) {
+  const arr = textSound.split(" ");
+  for (var i = 0; i < arr.length; i++) {
+    arr[i] = arr[i].charAt(0).toUpperCase() + arr[i].slice(1);
+  }
+  const str = arr.join(" ");
+  return str;
+}
 
 const store = makeInMemoryStore({
   logger: pino().child({
@@ -75,6 +111,9 @@ function uncache(module = ".") {
 }
 
 let rtaserver;
+let soket;
+let qr;
+
 async function Botstarted() {
   const { state, saveCreds } = await useMultiFileAuthState(`./${sessionName}`);
   const { version, isLatest } = await fetchLatestBaileysVersion();
@@ -269,6 +308,18 @@ async function Botstarted() {
     ) {
       console.log(`Connected to = ` + JSON.stringify(rtaserver.user, null, 2));
     }
+
+    if (update.qr) {
+      qr = update.qr;
+      updateQR("qr");
+    } else if ((qr = undefined)) {
+      updateQR("loading");
+    } else {
+      if (update.connection === "open") {
+        updateQR("qrscanned");
+        return;
+      }
+    }
   });
 
   rtaserver.ev.on("creds.update", saveCreds);
@@ -288,13 +339,45 @@ async function Botstarted() {
   return rtaserver;
 }
 
+io.on("connection", async (socket) => {
+  soket = socket;
+  // console.log(sock)
+  if (isConnected) {
+    updateQR("connected");
+  } else if (qr) {
+    updateQR("qr");
+  }
+});
+
 // functions
 const isConnected = () => {
   return rtaserver.user;
 };
 
-const { Router } = require("express");
-const MessageRouter = Router();
+const updateQR = (data) => {
+  switch (data) {
+    case "qr":
+      qrcode.toDataURL(qr, (err, url) => {
+        soket?.emit("qr", url);
+        soket?.emit("log", "QR Code received, please scan!");
+      });
+      break;
+    case "connected":
+      soket?.emit("qrstatus", "./assets/check.svg");
+      soket?.emit("log", "WhatsApp terhubung!");
+      break;
+    case "qrscanned":
+      soket?.emit("qrstatus", "./assets/check.svg");
+      soket?.emit("log", "QR Code Telah discan!");
+      break;
+    case "loading":
+      soket?.emit("qrstatus", "./assets/loader.gif");
+      soket?.emit("log", "Registering QR Code , please wait!");
+      break;
+    default:
+      break;
+  }
+};
 
 app.all("/send-message", async (req, res) => {
   //console.log(req);
