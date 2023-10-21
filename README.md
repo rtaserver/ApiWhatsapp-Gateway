@@ -70,7 +70,7 @@ Open On Browser & Start New Session to Get QRCode if PairingCode False
 ```
 
 | Body | Type | Description |
-| :-------- | :------- | :------------------------------------------------------------------------------------ | |
+| :-------- | :------- | :------------------------------------------------------------------------------------ |
 | `message` | `string` | **Required**. Text Message |
 | `number` | `string` | **Required**. Receiver Phone Number (e.g: 62812345678 / 0812345678)|
 
