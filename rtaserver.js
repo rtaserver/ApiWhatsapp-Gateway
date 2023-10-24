@@ -9,6 +9,7 @@ const {
   makeCacheableSignalKeyStore,
   PHONENUMBER_MCC,
 } = require("@adiwajshing/baileys");
+const moment = require("moment-timezone");
 const NodeCache = require("node-cache");
 const readline = require("readline");
 const pino = require("pino");
@@ -383,8 +384,12 @@ app.all("/send-message", async (req, res) => {
   //console.log(req);
   const pesankirim = req.body.message || req.query.message;
   const number = req.body.number || req.query.number;
-  const fileDikirim = req.files;
 
+  const tanggal = moment().tz(global.timezone).format("dddd, ll");
+  const jam = moment(Date.now())
+    .tz(global.timezone)
+    .locale(global.countrycode)
+    .format("HH:mm:ss z");
   let numberWA;
   try {
     if (!req.files) {
@@ -394,18 +399,43 @@ app.all("/send-message", async (req, res) => {
           response: "Nomor WA belum tidak disertakan!",
         });
       } else {
-        numberWA = "62" + number.substring(1) + "@s.whatsapp.net";
+        if (number.startsWith("0")) {
+          numberWA =
+            global.countrycodephone + number.substring(1) + "@s.whatsapp.net";
+        } else {
+          numberWA = number + "@s.whatsapp.net";
+        }
+
         console.log(await rtaserver.onWhatsApp(numberWA));
         if (isConnected) {
           const exists = await rtaserver.onWhatsApp(numberWA);
           if (exists?.jid || (exists && exists[0]?.jid)) {
+            var usepp = {};
+            if (global.use_pp == true) {
+              usepp = {
+                image: pp_bot,
+                caption: global.help.menu(jam, tanggal, pesankirim),
+              };
+            } else {
+              usepp = {
+                text: global.help.menu(jam, tanggal, pesankirim),
+              };
+            }
+
             rtaserver
-              .sendMessage(exists.jid || exists[0].jid, { text: pesankirim })
+              .sendMessage(exists.jid || exists[0].jid, usepp)
               .then((result) => {
                 res.status(200).json({
                   status: true,
                   response: result,
                 });
+
+                if (global.kirimkontak_admin == true) {
+                  rtaserver.sendContact(
+                    exists.jid || exists[0].jid,
+                    global.kontakadmin
+                  );
+                }
               })
               .catch((err) => {
                 res.status(500).json({
