@@ -1,34 +1,80 @@
-# Whatsapp Api Gateway
+<h1 align="center">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/240px-WhatsApp.svg.png" alt="PhpNuxBill" width="150">
+  <br>Api Whatsapp Gateway - To send notifications to customers<br>
+</h1>
 
-![](https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/240px-WhatsApp.svg.png)
+<h4 align="center">Unofficial Whatsapp Gateway Using NodeJs</h4>
 
-![](https://img.shields.io/github/v/release/rtaserver/ApiWhatsapp-Gateway) ![](https://img.shields.io/github/license/rtaserver/ApiWhatsapp-Gateway)
+<p align="center">
+  <a href="https://github.com/rtaserver/ApiWhatsapp-Gateway/releases">
+    <img src="https://img.shields.io/github/release/rtaserver/ApiWhatsapp-Gateway/all.svg?style=flat-square">
+  </a>
+</p>
 
-# Headless Multi Session Whatsapp Gateway NodeJS
+## Features
 
-Easy Setup Headless multi session Whatsapp Gateway with NodeJS
+Easy Setup Headless multi session Whatsapp Gateway with NodeJS.
 
 - Support multi device
 - Support Pairing Code
-- Support QR Code
 - Anti delay message
+
+<p>
 
 #### Based on [WhiskeySockets-Baileys](https://github.com/WhiskeySockets/Baileys)
 
-## Settings Variables
+#### Free Whatsapp Gateway By IbnuX [https://wa.nux.my.id/](https://wa.nux.my.id/)
+
+<p>
+
+## Documentation
+
+### Settings Variables
 
 To run this project, you will need to edit variables in `settings.js` file
 
 ```
-global.port = "5001"; // port api / browser
+// ============= GLOBAL SETTING ============ //
+global.port = "5001"; // Port Api / Browser
+global.countrycode = "ID"; // Country Code - https://countrycode.org/ (ISO CODES)
+global.countrycodephone = "62"; // Country Phone - https://countrycode.org/ (COUNTRY CODE)
+global.timezone = "Asia/Jakarta"; // Time Zone
+global.usePairingNumber = false; // true = Pairing Code / false = QRCode
+global.pairingNumber = ""; // whatsapp number used as a bot, for pairing number
 //========================================================
-global.usePairingNumber = true; // if false - use qrcode
-global.pairingNumber = ""; //use your whatsapp number to install bot
+
+global.pp_bot = fs.readFileSync("./image/logo.png"); // location and name of the logo
+global.use_pp = true; // use a logo?
+
 //========================================================
+
+global.kontakadmin = ["6281287123512"]; // admin whatsapp number
+global.kirimkontak_admin = false; // true = automatically send admin contact
+
+//========================================================
+
 global.sessionName = "session"; // session name
+
+//========================================================
+// MENU
+//========================================================
+global.help = {
+  menu(jam, tanggal, pesankirim) {
+    return `
+╭✄┈┈┈⟬ *INFO-BOT* ⟭
+┆❐ Time : ${jam}
+┆❐ Date : ${tanggal}
+╰──────────◇
+
+${pesankirim}
+`;
+  },
+};
+//========================================================
+
 ```
 
-## Install and Running
+### Install and Running
 
 Clone the project
 
@@ -69,12 +115,19 @@ Open On Browser & Start New Session to Get QRCode if PairingCode False
   GET /send-message?message=Text&number=08123456789
 ```
 
-| Body | Type | Description |
-| :-------- | :------- | :------------------------------------------------------------------------------------ |
-| `message` | `string` | **Required**. Text Message |
-| `number` | `string` | **Required**. Receiver Phone Number (e.g: 62812345678 / 0812345678)|
+| Body      | Type     | Description                                                         |
+| :-------- | :------- | :------------------------------------------------------------------ |
+| `message` | `string` | **Required**. Text Message                                          |
+| `number`  | `string` | **Required**. Receiver Phone Number (e.g: 62812345678 / 0812345678) |
 
 ## Changelog
+
+V1.0.2
+
+- Add Image / Logo Header
+- Add Auto Send Contact Owner
+- Add Information Time And Date Bot
+- Update README.md
 
 V1.0.1
 
