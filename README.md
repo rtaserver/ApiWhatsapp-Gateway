@@ -122,15 +122,4 @@ Open On Browser & Start New Session to Get QRCode if PairingCode False
 
 ## Changelog
 
-V1.0.2
-
-- Add Image / Logo Header
-- Add Auto Send Contact Owner
-- Add Information Time And Date Bot
-- Update README.md
-
-V1.0.1
-
-- Support Pairing Code
-- Support And Fix QR Code
-- Update README.md
+#### [CHANGELOG.md](CHANGELOG.md)
