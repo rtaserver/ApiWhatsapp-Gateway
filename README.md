@@ -7,8 +7,12 @@
 
 <p align="center">
   <a href="https://github.com/rtaserver/ApiWhatsapp-Gateway/releases">
-    <img src="https://img.shields.io/github/release/rtaserver/ApiWhatsapp-Gateway/all.svg?style=flat-square">
+    <img alt="GitHub release (with filter)" src="https://img.shields.io/github/v/release/rtaserver/ApiWhatsapp-Gateway?label=Latest%20Release&labelColor=CE5A67">
   </a>
+  <a href="https://github.com/rtaserver/ApiWhatsapp-Gateway/blob/main/LICENSE">
+   <img alt="GitHub" src="https://img.shields.io/github/license/rtaserver/ApiWhatsapp-Gateway">
+  </a>
+  
 </p>
 
 ## Features
