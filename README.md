@@ -60,21 +60,6 @@ global.kirimkontak_admin = false; // true = automatically send admin contact
 global.sessionName = "session"; // session name
 
 //========================================================
-// MENU
-//========================================================
-global.help = {
-  menu(jam, tanggal, pesankirim) {
-    return `
-╭✄┈┈┈⟬ *INFO-BOT* ⟭
-┆❐ Time : ${jam}
-┆❐ Date : ${tanggal}
-╰──────────◇
-
-${pesankirim}
-`;
-  },
-};
-//========================================================
 
 ```
 
