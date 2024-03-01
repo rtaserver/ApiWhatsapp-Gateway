@@ -384,12 +384,6 @@ app.all("/send-message", async (req, res) => {
   //console.log(req);
   const pesankirim = req.body.message || req.query.message;
   const number = req.body.number || req.query.number;
-
-  const tanggal = moment().tz(global.timezone).format("dddd, ll");
-  const jam = moment(Date.now())
-    .tz(global.timezone)
-    .locale(global.countrycode)
-    .format("HH:mm:ss z");
   let numberWA;
   try {
     if (!req.files) {
@@ -414,11 +408,11 @@ app.all("/send-message", async (req, res) => {
             if (global.use_pp == true) {
               usepp = {
                 image: pp_bot,
-                caption: global.help.menu(jam, tanggal, pesankirim),
+                caption: pesankirim,
               };
             } else {
               usepp = {
-                text: global.help.menu(jam, tanggal, pesankirim),
+                text: pesankirim,
               };
             }
 
